@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+  <html lang="zh-Hant">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#eaf7e8">
+  <title>貓咪巴士的注音樂園（可攜單檔版）</title>
+  <style>
+    :root{--ink:#405a4d;--green:#719e78;--dark:#557e5d;--yellow:#f3bf71}
+    *{box-sizing:border-box}
+    body{margin:0;color:var(--ink);font-family:system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;background:linear-gradient(180deg,#dff2ed,#f8f8df 48%,#fff5e5);min-height:100vh}
+    button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    button:focus-visible{outline:4px solid #e18e70;outline-offset:3px}
+    .app{max-width:980px;margin:auto;padding:16px 16px 38px}
+    header{display:flex;align-items:center;gap:18px;padding:8px 4px 12px}
+    .mascot{flex:0 0 146px;width:146px;animation:float 3s ease-in-out infinite}
+    @keyframes float{50%{transform:translateY(-5px)}}
+    h1{font-size:clamp(25px,5vw,39px);margin:0 0 5px;color:#4d7658}
+    h2{margin:0 0 5px;color:#527b5d;font-size:25px}
+    .subtitle{margin:0;line-height:1.5}
+    .stars{display:inline-block;margin-top:9px;padding:6px 14px;border-radius:30px;background:#fff4bd;font-weight:800}
+    nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0 16px}
+    .tab{border:0;border-radius:18px;background:rgba(255,255,255,.76);color:#58705e;padding:12px 4px;min-height:64px;font-size:16px;font-weight:800;box-shadow:0 4px 10px #43624614}
+    .tab.active{background:var(--green);color:white;box-shadow:0 5px 0 var(--dark);transform:translateY(-2px)}
+    .tab span{display:block;font-size:23px;line-height:1.15}
+    .panel{background:rgba(255,253,242,.96);border:3px solid white;border-radius:27px;padding:20px;box-shadow:0 8px 24px #4362461f;min-height:380px}
+    .hint{margin:5px 0 16px;line-height:1.6;color:#6b7b68}
+    .center{text-align:center}
+    .btn{border:0;border-radius:18px;padding:12px 20px;background:var(--green);color:white;font-weight:800;font-size:17px;box-shadow:0 5px 0 var(--dark);min-height:50px}
+    .btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--dark)}
+    .btn.secondary{background:var(--yellow);color:#664e36;box-shadow:0 5px 0 #d69f58}
+    .btn.light{background:#e9f3e5;color:#54745b;box-shadow:0 5px 0 #c7ddc3}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .question{background:#eef8e9;border-radius:22px;padding:18px 12px;margin:10px auto 18px;max-width:600px}
+    .question p{font-size:20px;margin:8px 0 14px;font-weight:700}
+    .choices{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+    .choice,.symbol{border:3px solid #e3eddd;background:#fff;color:#50765c;border-radius:20px;font-weight:800}
+    .choice{width:clamp(76px,19vw,120px);height:clamp(88px,20vw,126px);font-size:clamp(46px,10vw,68px);box-shadow:0 5px 0 #d9e8d5}
+    .choice.good{background:#e0f4d8;border-color:#78b47c}
+    .choice.try{background:#fff1e7;border-color:#f4bb9e}
+    .feedback{min-height:38px;font-size:20px;font-weight:800;margin:19px 0 12px;color:#d27b5b}
+    .filters{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:12px 0 16px}
+    .filter{border:0;border-radius:30px;padding:9px 16px;background:#edf2e8;color:#638068;font-weight:800}
+    .filter.active{background:#f4c675;color:#6b5234}
+    .symbol-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(65px,1fr));gap:9px}
+    .symbol{min-height:76px;font-size:39px;box-shadow:0 4px 0 #e2ebdc}
+    .symbol.selected{border-color:#eab76a;background:#fff5d8}
+    .readout{text-align:center;min-height:55px;font-size:20px;font-weight:700;margin:14px 0 0}
+    .readout strong{font-size:32px;color:#d78363}
+    .bus-stop{display:flex;justify-content:center;align-items:center;gap:8px;margin:18px 0;flex-wrap:wrap}
+    .slot{width:104px;height:120px;display:flex;align-items:center;justify-content:center;background:#fff4d6;border:3px dashed #e8bd79;border-radius:20px;font-size:57px;font-weight:800;color:#c9795b}
+    .slot.empty{font-size:16px;color:#b69b75;text-align:center}
+    .plus{font-size:28px;color:#9eb499;font-weight:bold}
+    .pick-label{font-weight:800;margin:15px 0 8px}
+    .mini-grid{display:flex;flex-wrap:wrap;gap:7px}
+    .mini{border:2px solid #e5ecdc;background:white;color:#587b61;border-radius:13px;min-width:53px;height:55px;font-size:29px;font-weight:800}
+    .mini.selected{background:#ffe8b0;border-color:#eab76a}
+    .result{text-align:center;min-height:58px;font-size:20px;line-height:1.5;margin:16px 0;font-weight:700}
+    .result strong{font-size:31px;color:#ca775e}
+    .note{font-size:14px;color:#798879;line-height:1.6;text-align:center;margin:17px 2px 0}
+    .hidden{display:none!important}
+
+    /* 寫字區 */
+    .writing-modes{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0 15px}
+    .mode{border:2px solid #dcebd7;background:white;color:#64816b;border-radius:16px;padding:10px 17px;font-weight:800;font-size:17px}
+    .mode.active{background:#719e78;color:white;border-color:#719e78}
+    .draw-prompt{text-align:center;font-size:19px;font-weight:700;line-height:1.5}
+    .draw-prompt strong{font-size:43px;color:#d37e60}
+    .trace-picker{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+    .trace-pick{width:68px;height:68px;border:3px solid #e2ebdc;border-radius:17px;background:white;color:#527b5d;font-size:39px;font-weight:800}
+    .trace-pick.selected{background:#fff1c8;border-color:#e7b36a}
+    .step-message{text-align:center;font-size:18px;font-weight:800;color:#c67658;min-height:30px;margin:8px 0}
+    .board{position:relative;width:min(100%,440px);aspect-ratio:1;margin:12px auto;border:3px solid #dbead5;border-radius:22px;overflow:hidden;background:#fff}
+    .board svg,.board canvas{position:absolute;inset:0;width:100%;height:100%}
+    .board canvas{z-index:2;touch-action:none;display:block}
+    .board svg{pointer-events:none}
+    .guide-line{stroke:#e5eee1;stroke-width:1.2;stroke-dasharray:5 5}
+    .stroke-base{fill:none;stroke:#d9e8d4;stroke-width:20;stroke-linecap:round;stroke-linejoin:round}
+    .stroke-complete{fill:none;stroke:#add3a5;stroke-width:20;stroke-linecap:round;stroke-linejoin:round}
+    .stroke-active{fill:none;stroke:#f3bd67;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 0}
+    .start-dot{fill:#df8069;stroke:white;stroke-width:3}
+    .arrow-line{fill:none;stroke:#cd725c;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}
+    .guide-label{font-size:12px;font-weight:800;fill:#bd6c59}
+    .blank-select{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+    select{font:inherit;font-size:20px;font-weight:700;border:2px solid #d6e7d1;border-radius:12px;background:white;color:#4d7658;padding:8px 12px}
+    .writing-info{background:#f3f8e9;border-radius:15px;padding:10px 14px;margin:14px auto;max-width:620px;font-size:14px;line-height:1.6;color:#6a7d68}
+    @media(max-width:520px){
+      .app{padding:10px 10px 28px}header{gap:8px}.mascot{flex-basis:105px;width:105px}
+      .subtitle{font-size:14px}.stars{margin-top:5px;font-size:14px}
+      nav{gap:5px}.tab{font-size:13px;min-height:60px;border-radius:14px}
+      .panel{padding:16px 12px}.symbol-grid{grid-template-columns:repeat(4,1fr)}
+      .btn{font-size:15px;padding:11px 14px}
+    }
+    @media(prefers-reduced-motion:reduce){.mascot{animation:none}}
+  </style>
+  </head>
+  <body>
+  <main class="app">
+    <header>
+      <svg class="mascot" viewBox="0 0 190 130" role="img" aria-label="可愛的貓咪巴士">
+        <ellipse cx="95" cy="120" rx="77" ry="7" fill="#b5d6bd" opacity=".5"/>
+        <path d="M25 68 Q9 54 15 34 Q19 26 25 37 Q21 50 30 54" fill="none" stroke="#b8754e" stroke-width="9" stroke-linecap="round"/>
+        <path d="M48 40 L49 13 L72 26 Q94 18 118 26 L139 13 L141 42" fill="#e8ad76" stroke="#9d674c" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M56 28 L56 20 L65 26 M125 26 L133 20 L133 29" fill="#ef8e85"/>
+        <rect x="26" y="35" width="140" height="74" rx="29" fill="#f2bc7f" stroke="#9d674c" stroke-width="3"/>
+        <path d="M36 65 Q96 73 156 65 L156 82 Q95 92 36 82Z" fill="#ffe3a8"/>
+        <rect x="71" y="45" width="28" height="21" rx="6" fill="#a7d9d0" stroke="#9d674c" stroke-width="2"/>
+        <rect x="106" y="45" width="28" height="21" rx="6" fill="#a7d9d0" stroke="#9d674c" stroke-width="2"/>
+        <circle cx="49" cy="51" r="4" fill="#543f38"/><circle cx="150" cy="51" r="4" fill="#543f38"/>
+        <path d="M96 72 l-4 4 h8z" fill="#d47e77"/>
+        <path d="M96 76 q-3 7-8 3 M96 76 q3 7 8 3" fill="none" stroke="#795648" stroke-width="2" stroke-linecap="round"/>
+        <path d="M49 72 l-13-3 M49 78 l-14 2 M143 72 l13-3 M143 78 l14 2" stroke="#9d674c" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="55" cy="107" r="12" fill="#78675b"/><circle cx="55" cy="107" r="5" fill="#f8e5ba"/>
+        <circle cx="138" cy="107" r="12" fill="#78675b"/><circle cx="138" cy="107" r="5" fill="#f8e5ba"/>
+      </svg>
+      <div>
+        <h1>貓咪巴士注音樂園</h1>
+        <p class="subtitle">一起聽、一起玩，出發去注音森林！</p>
+        <div class="stars" aria-live="polite">⭐ 收集星星：<span id="stars">0</span></div>
+        <div class="voice-mode-bar" style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:14px;font-weight:bold;color:#4d7658">🔊 發音模式：</span>
+          <button id="mode-example" class="btn light" style="min-height:34px;padding:3px 12px;font-size:14px;border-radius:12px;border:2px solid var(--green)">注音＋例字</button>
+          <button id="mode-pure" class="btn light" style="min-height:34px;padding:3px 12px;font-size:14px;border-radius:12px;border:2px solid transparent">純注音</button>
+        </div>
+      </div>
+    </header>
+
+    <nav aria-label="遊戲選單">
+      <button class="tab active" data-page="listen"><span>👂</span>聽音找找</button>
+      <button class="tab" data-page="learn"><span>🌼</span>認識注音</button>
+      <button class="tab" data-page="spell"><span>🚌</span>拼音巴士</button>
+      <button class="tab" data-page="draw"><span>🎨</span>寫寫畫畫</button>
+    </nav>
+
+    <section id="listen" class="panel">
+      <h2>👂 聽音找找</h2>
+      <p class="hint">聽聽貓咪巴士說的例字，再找出對應的注音吧！</p>
+      <div class="filters" id="quiz-filters">
+        <button class="filter active" data-filter="initial">聲符</button>
+        <button class="filter" data-filter="medial">介符</button>
+        <button class="filter" data-filter="final">韻符</button>
+        <button class="filter" data-filter="all">全部</button>
+      </div>
+      <div class="question center">
+        <p>聽一聽，找出對的符號！</p>
+        <button id="listen-again" class="btn">🔊 聽題目</button>
+      </div>
+      <div class="choices" id="choices"></div>
+      <div class="feedback center" id="feedback" aria-live="polite"></div>
+      <div class="controls"><button id="next-question" class="btn secondary">下一題 ➜</button></div>
+      <p class="note">答對獲得一顆星；猜錯也沒關係，可以再試試看。</p>
+    </section>
+
+    <section id="learn" class="panel hidden">
+      <h2>🌼 認識注音</h2>
+      <p class="hint">點一點卡片，聽聽例字，再跟著念一遍。</p>
+      <div class="filters" id="learn-filters">
+        <button class="filter active" data-filter="initial">聲符</button>
+        <button class="filter" data-filter="medial">介符</button>
+        <button class="filter" data-filter="final">韻符</button>
+        <button class="filter" data-filter="all">全部</button>
+      </div>
+      <div id="symbols" class="symbol-grid"></div>
+      <div class="readout" id="readout" aria-live="polite">選一張卡片開始吧！</div>
+      <p class="note">例字幫助記憶，例字的聲音不一定等於單獨符號的發音。</p>
+    </section>
+
+    <section id="spell" class="panel hidden">
+      <h2>🚌 拼音巴士</h2>
+      <p class="hint">先選聲符，再選下面的符號，看看會遇見哪個字。</p>
+      <div class="bus-stop">
+        <div id="initial-slot" class="slot empty">選聲符</div>
+        <div class="plus">＋</div>
+        <div id="final-slot" class="slot empty">選符號</div>
+      </div>
+      <div class="pick-label">① 選一個聲符</div>
+      <div class="mini-grid" id="initial-picks"></div>
+      <div class="pick-label">② 再選一個符號</div>
+      <div class="mini-grid" id="final-picks"></div>
+      <div class="result" id="spell-result" aria-live="polite">選兩張卡片，看看會發生什麼事！</div>
+      <div class="controls">
+        <button id="spell-speak" class="btn">🔊 聽一聽</button>
+        <button id="spell-clear" class="btn light">重新選擇</button>
+      </div>
+      <p class="note">這裡先玩部分簡單的二拼範例。沒有出現的組合，不一定是錯的喔！</p>
+    </section>
+
+    <section id="draw" class="panel hidden">
+      <h2>🎨 寫寫畫畫</h2>
+      <p class="hint">先跟著筆順描寫，再到空白板自己寫寫看！</p>
+
+      <div class="writing-modes" aria-label="書寫模式">
+        <button class="mode active" data-mode="trace">① 跟著描寫</button>
+        <button class="mode" data-mode="blank">② 空白板練習</button>
+      </div>
+
+      <div id="trace-area">
+        <div class="draw-prompt">選一個注音，跟著筆順走</div>
+        <div class="trace-picker" id="trace-picker"></div>
+        <div id="step-message" class="step-message" aria-live="polite"></div>
+        <div class="board" id="trace-board">
+          <svg id="trace-svg" viewBox="0 0 300 300" aria-hidden="true"></svg>
+          <canvas id="trace-canvas" aria-label="筆順描寫區"></canvas>
+        </div>
+        <div class="controls">
+          <button id="demo-btn" class="btn secondary">▶ 看這一筆</button>
+          <button id="next-stroke" class="btn">下一筆 ➜</button>
+          <button id="clear-trace" class="btn light">🧽 擦掉重寫</button>
+        </div>
+        <div class="controls" style="margin-top:13px">
+          <button id="go-blank" class="btn">✏️ 到空白板自己寫</button>
+        </div>
+        <div class="writing-info">
+          從紅點出發，沿著箭頭描寫。寫完後自己按「下一筆」。
+          目前筆順示範提供 ㄧ、ㄇ；不會自動判斷筆跡。
+        </div>
+      </div>
+
+      <div id="blank-area" class="hidden">
+        <div class="draw-prompt">自己寫寫看：<strong id="blank-symbol">ㄧ</strong></div>
+        <div class="blank-select">
+          <label for="blank-choice">選擇注音：</label>
+          <select id="blank-choice"></select>
+          <button id="blank-speak" class="btn light">🔊 聽例字</button>
+        </div>
+        <div class="board" id="blank-board">
+          <svg viewBox="0 0 300 300" aria-hidden="true">
+            <line x1="150" y1="12" x2="150" y2="288" class="guide-line"/>
+            <line x1="12" y1="150" x2="288" y2="150" class="guide-line"/>
+          </svg>
+          <canvas id="blank-canvas" aria-label="空白注音練習板"></canvas>
+        </div>
+        <div class="controls">
+          <button id="clear-blank" class="btn light">🧽 擦乾淨</button>
+          <button id="blank-next" class="btn secondary">換一個 ➜</button>
+          <button id="back-trace" class="btn">👆 回去描寫</button>
+        </div>
+        <p class="note">空白板可以練習全部注音符號；請大人陪孩子看看寫得如何。</p>
+      </div>
+    </section>
+
+    <p class="note">語音由手機或電腦提供，發音效果依裝置而異。若沒有聲音，請確認音量及瀏覽器語音設定。</p>
+  </main>
+
+  <script>
+  (() => {
+    const groups={
+      initial:[['ㄅ','玻'],['ㄆ','坡'],['ㄇ','摸'],['ㄈ','佛'],['ㄉ','得'],['ㄊ','特'],['ㄋ','呢'],['ㄌ','勒'],['ㄍ','哥'],['ㄎ','科'],['ㄏ','喝'],['ㄐ','雞'],['ㄑ','七'],['ㄒ','西'],['ㄓ','知'],['ㄔ','吃'],['ㄕ','詩'],['ㄖ','日'],['ㄗ','資'],['ㄘ','雌'],['ㄙ','思']],
+      medial:[['ㄧ','衣'],['ㄨ','烏'],['ㄩ','迂']],
+      final:[['ㄚ','啊'],['ㄛ','喔'],['ㄜ','鵝'],['ㄝ','耶'],['ㄞ','哀'],['ㄟ','欸'],['ㄠ','凹'],['ㄡ','歐'],['ㄢ','安'],['ㄣ','恩'],['ㄤ','昂'],['ㄥ','亨'],['ㄦ','兒']]
+    };
+    const all=[...groups.initial,...groups.medial,...groups.final];
+    const bySymbol=Object.fromEntries(all.map(x=>[x[0],x]));
+    const examples={
+      'ㄅㄚ':'巴','ㄅㄛ':'波','ㄅㄧ':'逼','ㄆㄚ':'趴','ㄆㄛ':'坡','ㄆㄧ':'披',
+      'ㄇㄚ':'媽','ㄇㄛ':'摸','ㄇㄧ':'咪','ㄈㄚ':'發','ㄈㄨ':'夫',
+      'ㄉㄚ':'搭','ㄉㄜ':'得','ㄉㄧ':'低','ㄊㄚ':'他','ㄊㄜ':'特','ㄊㄧ':'踢',
+      'ㄋㄚ':'拿','ㄋㄧ':'妮','ㄌㄚ':'拉','ㄌㄧ':'哩','ㄍㄜ':'哥','ㄍㄨ':'姑',
+      'ㄎㄜ':'科','ㄎㄨ':'哭','ㄏㄜ':'喝','ㄏㄨ':'呼','ㄐㄧ':'雞','ㄐㄩ':'居',
+      'ㄑㄧ':'七','ㄑㄩ':'區','ㄒㄧ':'西','ㄒㄩ':'虛','ㄓㄨ':'豬','ㄔㄜ':'車',
+      'ㄔㄨ':'出','ㄕㄨ':'書','ㄗㄨ':'租','ㄘㄨ':'粗','ㄙㄨ':'酥'
+    };
+    const $=id=>document.getElementById(id);
+    const pick=a=>a[Math.floor(Math.random()*a.length)];
+    const shuffle=a=>{
+      a=[...a];
+      for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+      return a;
+    };
+    function speak(text){
+      if(!('speechSynthesis' in window)){
+        alert('這個瀏覽器不支援語音播放，請大人幫忙念給孩子聽。');return;
+      }
+      speechSynthesis.cancel();
+      const msg=new SpeechSynthesisUtterance(text);
+      const voices=speechSynthesis.getVoices();
+      const voice=voices.find(v=>/^zh[-_]TW/i.test(v.lang))||voices.find(v=>/^zh/i.test(v.lang));
+      if(voice)msg.voice=voice;
+      msg.lang=voice?voice.lang:'zh-TW';msg.rate=.8;msg.pitch=1.08;
+      speechSynthesis.speak(msg);
+    }
+    function speakItem(item){speak(item[1]+'，'+item[1]+'的聲音。')}
+    function groupItems(g){return g==='all'?all:groups[g]}
+    function setFilter(root,value){root.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===value))}
+
+    document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));
+      document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('hidden',x.id!==btn.dataset.page));
+      if('speechSynthesis' in window)speechSynthesis.cancel();
+      if(btn.dataset.page==='draw')requestAnimationFrame(resizeVisibleCanvas);
+    }));
+
+    let stars=0,quizGroup='initial',learnGroup='initial',question=null,answered=false,prev='';
+    function newQuestion(sound=false){
+      const pool=groupItems(quizGroup);
+      const available=pool.filter(x=>x[0]!==prev);
+      question=pick(available.length?available:pool);prev=question[0];answered=false;
+      $('feedback').textContent='';$('choices').innerHTML='';
+      const options=shuffle([question,...shuffle(pool.filter(x=>x[0]!==question[0])).slice(0,2)]);
+      options.forEach(item=>{
+        const b=document.createElement('button');b.className='choice';b.textContent=item[0];
+        b.setAttribute('aria-label','選擇 '+item[0]);
+        b.addEventListener('click',()=>{
+          if(answered)return;
+          if(item[0]===question[0]){
+            answered=true;b.classList.add('good');$('feedback').textContent='🌟 答對了！好棒好棒！';
+            $('stars').textContent=++stars;speak('答對了，好棒！'+item[1]);
+          }else{b.classList.add('try');$('feedback').textContent='🌱 沒關係，再聽一次試試！';speak('沒關係，再試一次。')}
+        });
+        $('choices').appendChild(b);
+      });
+      if(sound)speakItem(question);
+    }
+    $('listen-again').onclick=()=>speakItem(question);
+    $('next-question').onclick=()=>newQuestion(true);
+    $('quiz-filters').onclick=e=>{
+      const b=e.target.closest('button[data-filter]');if(!b)return;
+      quizGroup=b.dataset.filter;setFilter($('quiz-filters'),quizGroup);newQuestion(true);
+    };
+
+    function renderLearn(){
+      $('symbols').innerHTML='';$('readout').textContent='選一張卡片開始吧！';
+      groupItems(learnGroup).forEach(item=>{
+        const b=document.createElement('button');b.className='symbol';b.textContent=item[0];
+        b.setAttribute('aria-label','聽 '+item[0]);
+        b.onclick=()=>{
+          $('symbols').querySelectorAll('button').forEach(x=>x.classList.remove('selected'));
+          b.classList.add('selected');
+          $('readout').innerHTML='<strong>'+item[0]+'</strong>　例字：'+item[1];
+          speakItem(item);
+        };
+        $('symbols').appendChild(b);
+      });
+    }
+    $('learn-filters').onclick=e=>{
+      const b=e.target.closest('button[data-filter]');if(!b)return;
+      learnGroup=b.dataset.filter;setFilter($('learn-filters'),learnGroup);renderLearn();
+    };
+
+    let chosenInitial='',chosenFinal='';
+    const initials=[...new Set(Object.keys(examples).map(k=>k[0]))];
+    const finals=[...new Set(Object.keys(examples).map(k=>k[1]))];
+    function renderPicks(){
+      for(const [id,items,which] of [['initial-picks',initials,'initial'],['final-picks',finals,'final']]){
+        const root=$(id);root.innerHTML='';
+        items.forEach(s=>{
+          const b=document.createElement('button');
+          b.className='mini'+((which==='initial'?chosenInitial:chosenFinal)===s?' selected':'');
+          b.textContent=s;
+          b.onclick=()=>{
+            if(which==='initial')chosenInitial=s;else chosenFinal=s;
+            renderPicks();updateSpelling();speakItem(bySymbol[s]);
+          };
+          root.appendChild(b);
+        });
+      }
+    }
+function updateSpelling(){
+      for(const [id,value,placeholder] of [['initial-slot',chosenInitial,'選聲符'],['final-slot',chosenFinal,'選符號']]){
+        const el=$(id);
+        el.textContent=value||placeholder;
+        el.classList.toggle('empty',!value);
+      }
+      const res=$('spell-result');
+      if(chosenInitial && chosenFinal){
+        const key=chosenInitial+chosenFinal;
+        const char=examples[key];
+        if(char){
+          res.innerHTML=`<strong>${chosenInitial}${chosenFinal} ${char}</strong>！遇見「${char}」了！`;
+        }else{
+          res.innerHTML=`<strong>${chosenInitial}${chosenFinal}</strong> 是一起前進的好朋友！`;
+        }
+      }else if(chosenInitial || chosenFinal){
+        const val=chosenInitial||chosenFinal;
+        res.innerHTML=`選了 <strong>${val}</strong>，再選一個符號出發！`;
+      }else{
+        res.textContent='選兩張卡片，看看會發生什麼事！';
+      }
+    }
+
+    $('spell-speak').onclick=()=>{
+      if(!chosenInitial && !chosenFinal){
+        playFeedback('spell_prompt');
+        return;
+      }
+      if(chosenInitial && chosenFinal){
+        const key=chosenInitial+chosenFinal;
+        if(examples[key]){
+          playWord(key);
+        }else{
+          playSymbol(chosenInitial, ()=>{
+            setTimeout(()=>playSymbol(chosenFinal), 400);
+          });
+        }
+      }else if(chosenInitial){
+        playSymbol(chosenInitial);
+      }else if(chosenFinal){
+        playSymbol(chosenFinal);
+      }
+    };
+
+    $('spell-clear').onclick=()=>{
+      chosenInitial='';chosenFinal='';
+      renderPicks();
+      updateSpelling();
+      playSfx('click');
+    };
+
+    // ==========================================
+    // 4. 寫寫畫畫 筆順與畫板系統
+    // ==========================================
+    const traceData = {
+      'ㄧ': {
+        strokes: [
+          { d: 'M 60 150 L 240 150', start: [60,150], end: [240,150], tip: '由左往右平平畫一橫' }
+        ]
+      },
+      'ㄇ': {
+        strokes: [
+          { d: 'M 80 80 L 80 230', start: [80,80], end: [80,230], tip: '第 1 筆：由上往下畫豎線' },
+          { d: 'M 80 80 L 220 80 L 220 230', start: [80,80], end: [220,230], tip: '第 2 筆：橫折往右再往下' }
+        ]
+      },
+      'ㄅ': {
+        strokes: [
+          { d: 'M 75 80 L 220 80 L 220 155 L 80 155', start: [75,80], end: [80,155], tip: '第 1 筆：橫折往左橫' },
+          { d: 'M 145 80 L 145 225 Q 145 240 120 235', start: [145,80], end: [120,235], tip: '第 2 筆：中間豎線到底微彎' }
+        ]
+      },
+      'ㄆ': {
+        strokes: [
+          { d: 'M 95 70 L 95 230', start: [95,70], end: [95,230], tip: '第 1 筆：左邊一豎往下' },
+          { d: 'M 85 105 L 220 105 L 165 230', start: [85,105], end: [165,230], tip: '第 2 筆：橫折往左斜撇' }
+        ]
+      },
+      'ㄈ': {
+        strokes: [
+          { d: 'M 80 80 L 225 80', start: [80,80], end: [225,80], tip: '第 1 筆：上面一橫' },
+          { d: 'M 110 80 L 110 220 L 225 220', start: [110,80], end: [225,220], tip: '第 2 筆：豎折向右一橫' }
+        ]
+      },
+      'ㄉ': {
+        strokes: [
+          { d: 'M 95 75 L 95 230', start: [95,75], end: [95,230], tip: '第 1 筆：左邊一直豎' },
+          { d: 'M 85 110 L 220 110 L 135 230', start: [85,110], end: [135,230], tip: '第 2 筆：橫折往左撇' }
+        ]
+      },
+      'ㄊ': {
+        strokes: [
+          { d: 'M 80 85 L 220 85', start: [80,85], end: [220,85], tip: '第 1 筆：上面一橫' },
+          { d: 'M 150 85 L 150 160', start: [150,85], end: [150,160], tip: '第 2 筆：中間一豎' },
+          { d: 'M 90 160 L 210 160 L 210 230', start: [90,160], end: [210,230], tip: '第 3 筆：橫折往下' }
+        ]
+      },
+      'ㄋ': {
+        strokes: [
+          { d: 'M 90 80 L 210 80 L 120 150', start: [90,80], end: [120,150], tip: '第 1 筆：橫折斜撇' },
+          { d: 'M 120 150 L 205 150 L 205 225 Q 160 240 120 215', start: [120,150], end: [120,215], tip: '第 2 筆：橫折彎鉤' }
+        ]
+      },
+      'ㄌ': {
+        strokes: [
+          { d: 'M 95 80 L 200 80 L 115 150 L 205 150 L 130 235', start: [95,80], end: [130,235], tip: '一筆連成：折折折閃電狀' }
+        ]
+      },
+      'ㄍ': {
+        strokes: [
+          { d: 'M 100 85 L 100 155 L 195 155', start: [100,85], end: [195,155], tip: '第 1 筆：豎折向右' },
+          { d: 'M 195 85 L 195 230', start: [195,85], end: [195,230], tip: '第 2 筆：右邊一直豎' }
+        ]
+      },
+      'ㄎ': {
+        strokes: [
+          { d: 'M 75 90 L 225 90', start: [75,90], end: [225,90], tip: '第 1 筆：上面一橫' },
+          { d: 'M 125 90 L 125 160 L 205 160 L 125 160 L 125 230', start: [125,90], end: [125,230], tip: '第 2 筆：巧折豎下' }
+        ]
+      },
+      'ㄏ': {
+        strokes: [
+          { d: 'M 75 80 L 225 80', start: [75,80], end: [225,80], tip: '第 1 筆：上面一橫' },
+          { d: 'M 125 80 L 95 230', start: [125,80], end: [95,230], tip: '第 2 筆：左邊一撇' }
+        ]
+      },
+      'ㄨ': {
+        strokes: [
+          { d: 'M 80 80 L 220 220', start: [80,80], end: [220,220], tip: '第 1 筆：左上往右下斜撇' },
+          { d: 'M 220 80 L 80 220', start: [220,80], end: [80,220], tip: '第 2 筆：右上往左下交叉' }
+        ]
+      },
+      'ㄩ': {
+        strokes: [
+          { d: 'M 85 80 L 85 195 Q 85 225 150 225 Q 215 225 215 195 L 215 80', start: [85,80], end: [215,80], tip: '一筆連成：由左往下彎再向上' }
+        ]
+      },
+      'ㄚ': {
+        strokes: [
+          { d: 'M 150 70 L 150 230', start: [150,70], end: [150,230], tip: '第 1 筆：中間一直豎' },
+          { d: 'M 150 110 L 85 175', start: [150,110], end: [85,175], tip: '第 2 筆：左斜撇' },
+          { d: 'M 150 145 L 215 205', start: [150,145], end: [215,205], tip: '第 3 筆：右斜捺' }
+        ]
+      },
+      'ㄛ': {
+        strokes: [
+          { d: 'M 150 70 L 150 185 Q 150 225 115 220', start: [150,70], end: [115,220], tip: '第 1 筆：中間一豎到底向左彎' },
+          { d: 'M 105 130 L 210 130', start: [105,130], end: [210,130], tip: '第 2 筆：橫劃穿過' }
+        ]
+      },
+      'ㄜ': {
+        strokes: [
+          { d: 'M 150 70 L 150 185 Q 150 225 185 220', start: [150,70], end: [185,220], tip: '第 1 筆：一豎向右彎' },
+          { d: 'M 95 130 L 205 130', start: [95,130], end: [205,130], tip: '第 2 筆：橫線穿過' }
+        ]
+      },
+      'ㄝ': {
+        strokes: [
+          { d: 'M 80 85 L 220 85', start: [80,85], end: [220,85], tip: '第 1 筆：上面一橫' },
+          { d: 'M 150 85 L 150 225', start: [150,85], end: [150,225], tip: '第 2 筆：中間一豎' },
+          { d: 'M 80 155 L 220 155', start: [80,155], end: [220,155], tip: '第 3 筆：下面一橫' }
+        ]
+      },
+      'ㄞ': {
+        strokes: [
+          { d: 'M 80 85 L 220 85', start: [80,85], end: [220,85], tip: '第 1 筆：上面一橫' },
+          { d: 'M 125 85 L 95 160 L 205 160', start: [125,85], end: [205,160], tip: '第 2 筆：撇折向右' },
+          { d: 'M 160 160 L 130 235', start: [160,160], end: [130,235], tip: '第 3 筆：左斜撇' }
+        ]
+      },
+      'ㄠ': {
+        strokes: [
+          { d: 'M 150 75 L 110 135 L 195 135', start: [150,75], end: [195,135], tip: '第 1 筆：撇折' },
+          { d: 'M 145 135 L 95 200 L 215 200', start: [145,135], end: [215,200], tip: '第 2 筆：再撇折' },
+          { d: 'M 175 200 L 140 235', start: [175,200], end: [140,235], tip: '第 3 筆：短撇' }
+        ]
+      },
+      'ㄢ': {
+        strokes: [
+          { d: 'M 150 75 L 150 145 L 225 145', start: [150,75], end: [225,145], tip: '第 1 筆：豎折向右' },
+          { d: 'M 85 145 L 85 225 L 225 225', start: [85,145], end: [225,225], tip: '第 2 筆：左豎折向右' }
+        ]
+      },
+      'ㄦ': {
+        strokes: [
+          { d: 'M 115 80 L 95 220', start: [115,80], end: [95,220], tip: '第 1 筆：左邊一撇' },
+          { d: 'M 175 80 L 175 190 Q 175 225 205 220', start: [175,80], end: [205,220], tip: '第 2 筆：豎彎鉤' }
+        ]
+      }
+    };
+
+    let curTraceSym = 'ㄧ';
+    let curStrokeIdx = 0;
+    const featuredSymbols = Object.keys(traceData);
+
+    // 切換模式：描寫 vs 空白板
+    document.querySelectorAll('.mode').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.mode').forEach(b => b.classList.toggle('active', b === btn));
+        const mode = btn.dataset.mode;
+        $('trace-area').classList.toggle('hidden', mode !== 'trace');
+        $('blank-area').classList.toggle('hidden', mode !== 'blank');
+        playSfx('click');
+        requestAnimationFrame(resizeVisibleCanvas);
+      };
+    });
+
+    // 筆順選擇器
+    function renderTracePicker(){
+      const picker = $('trace-picker');
+      picker.innerHTML = '';
+      featuredSymbols.forEach(s => {
+        const b = document.createElement('button');
+        b.className = 'trace-pick' + (s === curTraceSym ? ' selected' : '');
+        b.textContent = s;
+        b.onclick = () => {
+          curTraceSym = s;
+          curStrokeIdx = 0;
+          renderTracePicker();
+          updateTraceBoard();
+          traceCanvasHandler.clear();
+          playSymbol(s);
+        };
+        picker.appendChild(b);
+      });
+    }
+
+    // 更新筆順板
+    function updateTraceBoard(){
+      const symData = traceData[curTraceSym] || {
+        strokes: [{ d: 'M 100 150 L 200 150', start: [100,150], end: [200,150], tip: '自由描寫練習' }]
+      };
+      const total = symData.strokes.length;
+      if (curStrokeIdx >= total) curStrokeIdx = total - 1;
+      const stroke = symData.strokes[curStrokeIdx];
+
+      $('step-message').innerHTML = `<strong>${curTraceSym}</strong> 第 ${curStrokeIdx + 1} / ${total} 筆：${stroke.tip}`;
+
+      // 產生 SVG
+      let svgHtml = `
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#cd725c" />
+          </marker>
+        </defs>
+        <!-- 米字格導引線 -->
+        <line x1="150" y1="12" x2="150" y2="288" class="guide-line"/>
+        <line x1="12" y1="150" x2="288" y2="150" class="guide-line"/>
+        <line x1="12" y1="12" x2="288" y2="288" class="guide-line" stroke-opacity=".4"/>
+        <line x1="12" y1="288" x2="288" y2="12" class="guide-line" stroke-opacity=".4"/>
+      `;
+
+      // 底圖灰色筆劃 (所有筆劃)
+      symData.strokes.forEach(s => {
+        svgHtml += `<path d="${s.d}" class="stroke-base" />`;
+      });
+
+      // 已經完成的筆劃 (綠色)
+      for(let i = 0; i < curStrokeIdx; i++){
+        svgHtml += `<path d="${symData.strokes[i].d}" class="stroke-complete" />`;
+      }
+
+      // 當前筆劃 (橘黃亮色)
+      svgHtml += `<path id="active-stroke-path" d="${stroke.d}" class="stroke-active" />`;
+
+      // 起點圓點與箭頭
+      if(stroke.start){
+        const [sx, sy] = stroke.start;
+        svgHtml += `
+          <circle cx="${sx}" cy="${sy}" r="9" class="start-dot"/>
+          <text x="${sx}" y="${sy + 4}" font-size="11" font-weight="900" fill="white" text-anchor="middle">${curStrokeIdx + 1}</text>
+        `;
+      }
+      if(stroke.start && stroke.end){
+        const [sx, sy] = stroke.start;
+        const [ex, ey] = stroke.end;
+        const mx = (sx + ex)/2, my = (sy + ey)/2;
+        svgHtml += `<line x1="${sx}" y1="${sy}" x2="${mx}" y2="${my}" class="arrow-line" />`;
+      }
+
+      $('trace-svg').innerHTML = svgHtml;
+    }
+
+    $('next-stroke').onclick = () => {
+      const symData = traceData[curTraceSym];
+      if(!symData) return;
+      if(curStrokeIdx < symData.strokes.length - 1){
+        curStrokeIdx++;
+        updateTraceBoard();
+        playSfx('click');
+      } else {
+        // 完成全部筆畫！
+        $('step-message').innerHTML = `🎉 <strong>太棒了！</strong>「${curTraceSym}」所有筆畫都寫完了！`;
+        playSfx('correct');
+        $('stars').textContent = ++stars;
+        playFeedback('star_reward');
+      }
+    };
+
+    $('demo-btn').onclick = () => {
+      playSfx('click');
+      const activePath = document.getElementById('active-stroke-path');
+      if(!activePath) return;
+      activePath.style.strokeDasharray = '10 10';
+      activePath.style.animation = 'dash 1.5s linear infinite';
+      setTimeout(() => {
+        if(activePath){
+          activePath.style.strokeDasharray = 'none';
+          activePath.style.animation = 'none';
+        }
+      }, 3000);
+    };
+
+    $('clear-trace').onclick = () => {
+      traceCanvasHandler.clear();
+      playSfx('click');
+    };
+
+    $('go-blank').onclick = () => {
+      const blankBtn = document.querySelector('.mode[data-mode="blank"]');
+      if(blankBtn) blankBtn.click();
+      $('blank-choice').value = curTraceSym;
+      updateBlankSymbol();
+    };
+
+    // ==========================================
+    // 空白板練習邏輯
+    // ==========================================
+    let curBlankSym = 'ㄧ';
+    const blankSelect = $('blank-choice');
+    all.forEach(item => {
+      const opt = document.createElement('option');
+      opt.value = item[0];
+      opt.textContent = `${item[0]} (${item[1]})`;
+      blankSelect.appendChild(opt);
+    });
+
+    blankSelect.onchange = () => {
+      curBlankSym = blankSelect.value;
+      updateBlankSymbol();
+      blankCanvasHandler.clear();
+      playSymbol(curBlankSym);
+    };
+
+    function updateBlankSymbol(){
+      curBlankSym = blankSelect.value;
+      $('blank-symbol').textContent = curBlankSym;
+    }
+
+    $('blank-speak').onclick = () => {
+      playExample(curBlankSym);
+    };
+
+    $('clear-blank').onclick = () => {
+      blankCanvasHandler.clear();
+      playSfx('click');
+    };
+
+    $('blank-next').onclick = () => {
+      const idx = all.findIndex(x => x[0] === curBlankSym);
+      const nextIdx = (idx + 1) % all.length;
+      curBlankSym = all[nextIdx][0];
+      blankSelect.value = curBlankSym;
+      updateBlankSymbol();
+      blankCanvasHandler.clear();
+      playSymbol(curBlankSym);
+    };
+
+    $('back-trace').onclick = () => {
+      const traceBtn = document.querySelector('.mode[data-mode="trace"]');
+      if(traceBtn) traceBtn.click();
+      if(traceData[curBlankSym]){
+        curTraceSym = curBlankSym;
+        curStrokeIdx = 0;
+        renderTracePicker();
+        updateTraceBoard();
+        traceCanvasHandler.clear();
+      }
+    };
+
+    // ==========================================
+    // 畫板 Touch/Mouse 事件處理
+    // ==========================================
+    function setupCanvas(canvas){
+      const ctx = canvas.getContext('2d');
+      let drawing = false;
+      let lastX = 0, lastY = 0;
+
+      function getPos(e){
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return [
+          (clientX - rect.left) * scaleX,
+          (clientY - rect.top) * scaleY
+        ];
+      }
+
+      function startDraw(e){
+        e.preventDefault();
+        drawing = true;
+        [lastX, lastY] = getPos(e);
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, ctx.lineWidth / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function moveDraw(e){
+        if(!drawing) return;
+        e.preventDefault();
+        const [x, y] = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        [lastX, lastY] = [x, y];
+      }
+
+      function endDraw(e){
+        if(!drawing) return;
+        e.preventDefault();
+        drawing = false;
+      }
+
+      canvas.addEventListener('pointerdown', startDraw);
+      canvas.addEventListener('pointermove', moveDraw);
+      canvas.addEventListener('pointerup', endDraw);
+      canvas.addEventListener('pointercancel', endDraw);
+      canvas.addEventListener('pointerleave', endDraw);
+
+      return {
+        clear(){
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        },
+        resize(){
+          const rect = canvas.getBoundingClientRect();
+          if(rect.width === 0) return;
+          const dpr = window.devicePixelRatio || 1;
+          canvas.width = rect.width * dpr;
+          canvas.height = rect.height * dpr;
+          ctx.scale(dpr, dpr);
+          ctx.lineWidth = 14;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.strokeStyle = '#557e5d';
+          ctx.fillStyle = '#557e5d';
+        }
+      };
+    }
+
+    const traceCanvasHandler = setupCanvas($('trace-canvas'));
+    const blankCanvasHandler = setupCanvas($('blank-canvas'));
+
+    function resizeVisibleCanvas(){
+      traceCanvasHandler.resize();
+      blankCanvasHandler.resize();
+    }
+    window.addEventListener('resize', resizeVisibleCanvas);
+
+    // ==========================================
+    // 5. 語音與音效引擎 (多重備援保證 100% 發音)
+    // ==========================================
+    let currentAudio = null;
+    let voiceMode = 'example'; // 'example': 注音+例字, 'pure': 純注音, 'word': 例字聲音
+
+    // Web Audio API 合成音效 (0KB 延遲、免任何檔案)
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    function getAudioCtx(){
+      if(!audioCtx && AudioContextClass){
+        audioCtx = new AudioContextClass();
+      }
+      if(audioCtx && audioCtx.state === 'suspended'){
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSfx(type){
+      const ctx = getAudioCtx();
+      if(!ctx) return;
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if(type === 'correct'){
+        // 答對叮咚歡呼三連音
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now);       // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      } else if(type === 'wrong'){
+        // 彈簧啵一聲
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.25);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } else if(type === 'click'){
+        // 輕脆水滴按鍵音
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, now);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      } else if(type === 'horn'){
+        // 貓咪巴士嘟嘟喇叭
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(392, now); // G4
+        osc.frequency.setValueAtTime(392, now + 0.1);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+        gain.gain.setValueAtTime(0.2, now + 0.16);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      }
+    }
+
+    // 語音模式切換按鈕事件
+    const modeExampleBtn = $('mode-example');
+    const modePureBtn = $('mode-pure');
+    if(modeExampleBtn && modePureBtn){
+      modeExampleBtn.onclick = () => {
+        voiceMode = 'example';
+        modeExampleBtn.style.borderColor = 'var(--green)';
+        modePureBtn.style.borderColor = 'transparent';
+        playFeedback('spell_prompt');
+      };
+      modePureBtn.onclick = () => {
+        voiceMode = 'pure';
+        modePureBtn.style.borderColor = 'var(--green)';
+        modeExampleBtn.style.borderColor = 'transparent';
+        playSymbol('ㄅ');
+      };
+    }
+
+    // 播放指定音檔，支援 本地音檔 -> GitHub CDN -> Web Speech TTS 多重備援
+    function playAudioFile(src, fallbackText, onEnded){
+      if(currentAudio){
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      if('speechSynthesis' in window) speechSynthesis.cancel();
+
+      // 清理路徑並準備備用 CDN
+      const relPath = src.replace(/^\.\//, '');
+      const cdnUrl = `https://raw.githubusercontent.com/cconecone-cmyk/catbus-zhuyin/main/${relPath}`;
+
+      let triedCdn = false;
+      const a = new Audio(src);
+      currentAudio = a;
+
+      a.onended = () => {
+        if(currentAudio === a) currentAudio = null;
+        if(onEnded) onEnded();
+      };
+
+      a.onerror = () => {
+        if(!triedCdn && !src.startsWith('http')){
+          triedCdn = true;
+          a.src = cdnUrl;
+          a.load();
+          a.play().catch(() => {
+            if(fallbackText) speak(fallbackText);
+          });
+          return;
+        }
+        console.warn('音檔載入失敗，啟動 TTS 備援:', src);
+        if(fallbackText) speak(fallbackText);
+      };
+
+      const p = a.play();
+      if(p && p.catch){
+        p.catch(() => {
+          if(!triedCdn && !src.startsWith('http')){
+            triedCdn = true;
+            a.src = cdnUrl;
+            a.load();
+            a.play().catch(() => {
+              if(fallbackText) speak(fallbackText);
+            });
+            return;
+          }
+          if(fallbackText) speak(fallbackText);
+        });
+      }
+    }
+
+    function playSymbol(s, onEnded){
+      const item = bySymbol[s];
+      const word = item ? item[1] : s;
+      let path = `./audio/zhuyin/${s}.mp3`;
+      let fallbackText = `${s}，${word}`;
+      if(voiceMode === 'example'){
+        path = `./audio/examples/${s}.mp3`;
+        fallbackText = `${s}，${word}。${word}的聲音。`;
+      }
+      playAudioFile(path, fallbackText, onEnded);
+    }
+
+    function playExample(s, onEnded){
+      const item = bySymbol[s];
+      const word = item ? item[1] : s;
+      playAudioFile(`./audio/examples/${s}.mp3`, `${s}，${word}。${word}的聲音。`, onEnded);
+    }
+
+    function playWord(combo, onEnded){
+      const word = examples[combo] || combo;
+      playAudioFile(`./audio/words/${combo}.mp3`, `${combo[0]}、${combo[1]}，${word}！`, onEnded);
+    }
+
+    function playFeedback(type, onEnded){
+      const texts = {
+        correct: '答對了！好棒好棒！',
+        try_again: '沒關係，再聽一次試試看！',
+        welcome: '歡迎來到貓咪巴士注音樂園！',
+        bus_go: '貓咪巴士出發囉！嘟嘟！',
+        star_reward: '太棒了！收集到一顆閃亮小星星！',
+        spell_prompt: '選兩張卡片，看看會遇見哪個字！'
+      };
+      playAudioFile(`./audio/feedback/${type}.mp3`, texts[type] || '', onEnded);
+    }
+
+    // 讓原本的 speakItem 調用統一音檔引擎
+    function speakItem(item){
+      if(!item) return;
+      playSymbol(item[0]);
+    }
+
+    // 點擊貓咪巴士互動
+    const mascot = document.querySelector('.mascot');
+    if(mascot){
+      mascot.style.cursor = 'pointer';
+      mascot.title = '點我聽貓咪巴士喇叭聲！';
+      mascot.onclick = () => {
+        playSfx('horn');
+        playFeedback('bus_go');
+        mascot.style.transform = 'scale(1.1) rotate(5deg)';
+        setTimeout(() => mascot.style.transform = '', 300);
+      };
+    }
+
+    // ==========================================
+    // 初始化執行
+    // ==========================================
+    renderPicks();
+    updateSpelling();
+    renderLearn();
+    newQuestion(false);
+    renderTracePicker();
+    updateTraceBoard();
+    updateBlankSymbol();
+    setTimeout(resizeVisibleCanvas, 100);
+
+  })();
+  </script>
+</body>
+</html>
