@@ -135,7 +135,7 @@
 
     <section id="listen" class="panel">
       <h2>👂 聽音找找</h2>
-      <p class="hint">聽聽貓咪巴士說的例字，再找出對應的注音吧！</p>
+      <p class="hint">聽聽貓咪巴士念的注音，再找出對應的符號吧！</p>
       <div class="filters" id="quiz-filters">
         <button class="filter active" data-filter="initial">聲符</button>
         <button class="filter" data-filter="medial">介符</button>
@@ -154,7 +154,7 @@
 
     <section id="learn" class="panel hidden">
       <h2>🌼 認識注音</h2>
-      <p class="hint">點一點卡片，聽聽例字，再跟著念一遍。</p>
+      <p class="hint">點一點卡片，聽聽生活中的代表字（如ㄅ爸爸、ㄇ媽媽），跟著念一遍！</p>
       <div class="filters" id="learn-filters">
         <button class="filter active" data-filter="initial">聲符</button>
         <button class="filter" data-filter="medial">介符</button>
@@ -168,7 +168,7 @@
 
     <section id="spell" class="panel hidden">
       <h2>🚌 拼音巴士</h2>
-      <p class="hint">先選聲符，再選下面的符號，看看會遇見哪個字。</p>
+      <p class="hint">先點選聲符，再點選韻符或介符。點按注音聽單音，拼對成功會自動發出拼音與詞彙！</p>
       <div class="bus-stop">
         <div id="initial-slot" class="slot empty">選聲符</div>
         <div class="plus">＋</div>
@@ -213,7 +213,7 @@
         </div>
         <div class="writing-info">
           從紅點出發，沿著箭頭描寫。寫完後自己按「下一筆」。
-          目前筆順示範提供 ㄧ、ㄇ；不會自動判斷筆跡。
+          完整提供 37 個注音標準筆順示範與起筆指引。
         </div>
       </div>
 
@@ -246,9 +246,9 @@
   <script>
   (() => {
     const groups={
-      initial:[['ㄅ','玻'],['ㄆ','坡'],['ㄇ','摸'],['ㄈ','佛'],['ㄉ','得'],['ㄊ','特'],['ㄋ','呢'],['ㄌ','勒'],['ㄍ','哥'],['ㄎ','科'],['ㄏ','喝'],['ㄐ','雞'],['ㄑ','七'],['ㄒ','西'],['ㄓ','知'],['ㄔ','吃'],['ㄕ','詩'],['ㄖ','日'],['ㄗ','資'],['ㄘ','雌'],['ㄙ','思']],
-      medial:[['ㄧ','衣'],['ㄨ','烏'],['ㄩ','迂']],
-      final:[['ㄚ','啊'],['ㄛ','喔'],['ㄜ','鵝'],['ㄝ','耶'],['ㄞ','哀'],['ㄟ','欸'],['ㄠ','凹'],['ㄡ','歐'],['ㄢ','安'],['ㄣ','恩'],['ㄤ','昂'],['ㄥ','亨'],['ㄦ','兒']]
+      initial:[['ㄅ','爸爸'],['ㄆ','皮球'],['ㄇ','媽媽'],['ㄈ','飛機'],['ㄉ','弟弟'],['ㄊ','太陽'],['ㄋ','小鳥'],['ㄌ','老虎'],['ㄍ','小狗'],['ㄎ','恐龍'],['ㄏ','小猴'],['ㄐ','小雞'],['ㄑ','氣球'],['ㄒ','西瓜'],['ㄓ','小豬'],['ㄔ','汽車'],['ㄕ','獅子'],['ㄖ','日曆'],['ㄗ','粽子'],['ㄘ','草莓'],['ㄙ','雨傘']],
+      medial:[['ㄧ','衣服'],['ㄨ','小烏龜'],['ㄩ','金魚']],
+      final:[['ㄚ','小鴨'],['ㄛ','蝸牛'],['ㄜ','白鵝'],['ㄝ','爺爺'],['ㄞ','愛心'],['ㄟ','水杯'],['ㄠ','小貓'],['ㄡ','海鷗'],['ㄢ','安全帽'],['ㄣ','樹根'],['ㄤ','綿羊'],['ㄥ','彩虹'],['ㄦ','耳朵']]
     };
     const all=[...groups.initial,...groups.medial,...groups.final];
     const bySymbol=Object.fromEntries(all.map(x=>[x[0],x]));
@@ -305,14 +305,14 @@
           if(answered)return;
           if(item[0]===question[0]){
             answered=true;b.classList.add('good');$('feedback').textContent='🌟 答對了！好棒好棒！';
-            $('stars').textContent=++stars;speak('答對了，好棒！'+item[1]);
+            $('stars').textContent=++stars;playFeedback('correct', ()=>playPureSymbol(item[0]));
           }else{b.classList.add('try');$('feedback').textContent='🌱 沒關係，再聽一次試試！';speak('沒關係，再試一次。')}
         });
         $('choices').appendChild(b);
       });
-      if(sound)speakItem(question);
+      if(sound)playPureSymbol(question[0]);
     }
-    $('listen-again').onclick=()=>speakItem(question);
+    $('listen-again').onclick=()=>playPureSymbol(question[0]);
     $('next-question').onclick=()=>newQuestion(true);
     $('quiz-filters').onclick=e=>{
       const b=e.target.closest('button[data-filter]');if(!b)return;
@@ -328,7 +328,7 @@
           $('symbols').querySelectorAll('button').forEach(x=>x.classList.remove('selected'));
           b.classList.add('selected');
           $('readout').innerHTML='<strong>'+item[0]+'</strong>　例字：'+item[1];
-          speakItem(item);
+          playExample(item[0]);
         };
         $('symbols').appendChild(b);
       });
@@ -350,13 +350,13 @@
           b.textContent=s;
           b.onclick=()=>{
             if(which==='initial')chosenInitial=s;else chosenFinal=s;
-            renderPicks();updateSpelling();speakItem(bySymbol[s]);
+            renderPicks();updateSpelling(true);playPureSymbol(s);
           };
           root.appendChild(b);
         });
       }
     }
-function updateSpelling(){
+function updateSpelling(autoPlaySuccess=false){
       for(const [id,value,placeholder] of [['initial-slot',chosenInitial,'選聲符'],['final-slot',chosenFinal,'選符號']]){
         const el=$(id);
         el.textContent=value||placeholder;
@@ -367,13 +367,18 @@ function updateSpelling(){
         const key=chosenInitial+chosenFinal;
         const char=examples[key];
         if(char){
-          res.innerHTML=`<strong>${chosenInitial}${chosenFinal} ${char}</strong>！遇見「${char}」了！`;
+          res.innerHTML=`<strong>${chosenInitial}${chosenFinal} ${char}</strong>！拼成功了：遇見「${char}」！`;
+          if(autoPlaySuccess){
+            setTimeout(()=>{
+              playWord(key);
+            }, 300);
+          }
         }else{
           res.innerHTML=`<strong>${chosenInitial}${chosenFinal}</strong> 是一起前進的好朋友！`;
         }
       }else if(chosenInitial || chosenFinal){
         const val=chosenInitial||chosenFinal;
-        res.innerHTML=`選了 <strong>${val}</strong>，再選一個符號出發！`;
+        res.innerHTML=`選了 <strong>${val}</strong>，再選一個符號試試看！`;
       }else{
         res.textContent='選兩張卡片，看看會發生什麼事！';
       }
@@ -411,86 +416,152 @@ function updateSpelling(){
     // 4. 寫寫畫畫 筆順與畫板系統
     // ==========================================
     const traceData = {
-      'ㄧ': {
-        strokes: [
-          { d: 'M 60 150 L 240 150', start: [60,150], end: [240,150], tip: '由左往右平平畫一橫' }
-        ]
-      },
-      'ㄇ': {
-        strokes: [
-          { d: 'M 80 80 L 80 230', start: [80,80], end: [80,230], tip: '第 1 筆：由上往下畫豎線' },
-          { d: 'M 80 80 L 220 80 L 220 230', start: [80,80], end: [220,230], tip: '第 2 筆：橫折往右再往下' }
-        ]
-      },
       'ㄅ': {
         strokes: [
-          { d: 'M 75 80 L 220 80 L 220 155 L 80 155', start: [75,80], end: [80,155], tip: '第 1 筆：橫折往左橫' },
-          { d: 'M 145 80 L 145 225 Q 145 240 120 235', start: [145,80], end: [120,235], tip: '第 2 筆：中間豎線到底微彎' }
+          { d: 'M 75 80 L 220 80 L 220 155 L 80 155', start: [75,80], end: [80,155], tip: '第 1 筆：橫折往左包（右上起筆，橫向右、折向下、折向左）' },
+          { d: 'M 145 80 L 145 225 Q 145 240 120 235', start: [145,80], end: [120,235], tip: '第 2 筆：中間一豎貫穿到底微彎出鉤' }
         ]
       },
       'ㄆ': {
         strokes: [
-          { d: 'M 95 70 L 95 230', start: [95,70], end: [95,230], tip: '第 1 筆：左邊一豎往下' },
-          { d: 'M 85 105 L 220 105 L 165 230', start: [85,105], end: [165,230], tip: '第 2 筆：橫折往左斜撇' }
+          { d: 'M 95 70 L 95 230', start: [95,70], end: [95,230], tip: '第 1 筆：左邊一豎直直向下' },
+          { d: 'M 85 105 L 220 105 L 160 230', start: [85,105], end: [160,230], tip: '第 2 筆：橫折向左斜撇' }
+        ]
+      },
+      'ㄇ': {
+        strokes: [
+          { d: 'M 80 80 L 80 230', start: [80,80], end: [80,230], tip: '第 1 筆：左邊一豎直直向下' },
+          { d: 'M 80 80 L 220 80 L 220 230', start: [80,80], end: [220,230], tip: '第 2 筆：橫折往右橫再直直折向下' }
         ]
       },
       'ㄈ': {
         strokes: [
-          { d: 'M 80 80 L 225 80', start: [80,80], end: [225,80], tip: '第 1 筆：上面一橫' },
+          { d: 'M 80 80 L 225 80', start: [80,80], end: [225,80], tip: '第 1 筆：上面平平畫一橫' },
           { d: 'M 110 80 L 110 220 L 225 220', start: [110,80], end: [225,220], tip: '第 2 筆：豎折向右一橫' }
         ]
       },
       'ㄉ': {
         strokes: [
           { d: 'M 95 75 L 95 230', start: [95,75], end: [95,230], tip: '第 1 筆：左邊一直豎' },
-          { d: 'M 85 110 L 220 110 L 135 230', start: [85,110], end: [135,230], tip: '第 2 筆：橫折往左撇' }
+          { d: 'M 85 110 L 220 110 L 135 230', start: [85,110], end: [135,230], tip: '第 2 筆：橫折向左弧撇' }
         ]
       },
       'ㄊ': {
         strokes: [
           { d: 'M 80 85 L 220 85', start: [80,85], end: [220,85], tip: '第 1 筆：上面一橫' },
-          { d: 'M 150 85 L 150 160', start: [150,85], end: [150,160], tip: '第 2 筆：中間一豎' },
-          { d: 'M 90 160 L 210 160 L 210 230', start: [90,160], end: [210,230], tip: '第 3 筆：橫折往下' }
+          { d: 'M 150 85 L 150 160', start: [150,85], end: [150,160], tip: '第 2 筆：中間一豎直下' },
+          { d: 'M 90 160 L 210 160 L 210 230', start: [90,160], end: [210,230], tip: '第 3 筆：橫折直直往下' }
         ]
       },
       'ㄋ': {
         strokes: [
-          { d: 'M 90 80 L 210 80 L 120 150', start: [90,80], end: [120,150], tip: '第 1 筆：橫折斜撇' },
-          { d: 'M 120 150 L 205 150 L 205 225 Q 160 240 120 215', start: [120,150], end: [120,215], tip: '第 2 筆：橫折彎鉤' }
+          { d: 'M 90 80 L 210 80 L 120 150', start: [90,80], end: [120,150], tip: '第 1 筆：橫折斜撇向左' },
+          { d: 'M 120 150 L 205 150 L 205 225 Q 160 240 120 215', start: [120,150], end: [120,215], tip: '第 2 筆：橫折彎鉤往左勾' }
         ]
       },
       'ㄌ': {
         strokes: [
-          { d: 'M 95 80 L 200 80 L 115 150 L 205 150 L 130 235', start: [95,80], end: [130,235], tip: '一筆連成：折折折閃電狀' }
+          { d: 'M 95 80 L 200 80 L 115 150 L 205 150 L 130 235', start: [95,80], end: [130,235], tip: '一筆連成：折折折像閃電連續折向右下' }
         ]
       },
       'ㄍ': {
         strokes: [
-          { d: 'M 100 85 L 100 155 L 195 155', start: [100,85], end: [195,155], tip: '第 1 筆：豎折向右' },
-          { d: 'M 195 85 L 195 230', start: [195,85], end: [195,230], tip: '第 2 筆：右邊一直豎' }
+          { d: 'M 100 85 L 100 155 L 195 155', start: [100,85], end: [195,155], tip: '第 1 筆：豎折向右一橫' },
+          { d: 'M 195 85 L 195 230', start: [195,85], end: [195,230], tip: '第 2 筆：右邊一直豎貫穿向下' }
         ]
       },
       'ㄎ': {
         strokes: [
-          { d: 'M 75 90 L 225 90', start: [75,90], end: [225,90], tip: '第 1 筆：上面一橫' },
-          { d: 'M 125 90 L 125 160 L 205 160 L 125 160 L 125 230', start: [125,90], end: [125,230], tip: '第 2 筆：巧折豎下' }
+          { d: 'M 75 90 L 225 90', start: [75,90], end: [225,90], tip: '第 1 筆：上面長長一橫' },
+          { d: 'M 140 90 L 140 155 L 215 155 L 140 155 L 140 230', start: [140,90], end: [140,230], tip: '第 2 筆：中間一豎折向右再轉折往下' }
         ]
       },
       'ㄏ': {
         strokes: [
-          { d: 'M 75 80 L 225 80', start: [75,80], end: [225,80], tip: '第 1 筆：上面一橫' },
-          { d: 'M 125 80 L 95 230', start: [125,80], end: [95,230], tip: '第 2 筆：左邊一撇' }
+          { d: 'M 75 80 L 225 80', start: [75,80], end: [225,80], tip: '第 1 筆：上面平平一橫' },
+          { d: 'M 130 80 L 95 230', start: [130,80], end: [95,230], tip: '第 2 筆：中間往左斜斜一撇' }
+        ]
+      },
+      'ㄐ': {
+        strokes: [
+          { d: 'M 110 75 L 110 155 L 190 155', start: [110,75], end: [190,155], tip: '第 1 筆：豎折向右' },
+          { d: 'M 190 75 L 190 230', start: [190,75], end: [190,230], tip: '第 2 筆：右邊一直豎直下' },
+          { d: 'M 110 170 L 75 225', start: [110,170], end: [75,225], tip: '第 3 筆：左下往外撇一斜劃' }
+        ]
+      },
+      'ㄑ': {
+        strokes: [
+          { d: 'M 175 75 L 105 155 L 195 230', start: [175,75], end: [195,230], tip: '一筆連成：左撇再折往右下' }
+        ]
+      },
+      'ㄒ': {
+        strokes: [
+          { d: 'M 75 85 L 225 85', start: [75,85], end: [225,85], tip: '第 1 筆：上面平平一橫' },
+          { d: 'M 175 90 L 110 225', start: [175,90], end: [110,225], tip: '第 2 筆：右向左斜撇' },
+          { d: 'M 125 90 L 190 225', start: [125,90], end: [190,225], tip: '第 3 筆：左向右斜捺交叉' }
+        ]
+      },
+      'ㄓ': {
+        strokes: [
+          { d: 'M 100 80 L 100 145 L 200 145', start: [100,80], end: [200,145], tip: '第 1 筆：左邊豎折向右' },
+          { d: 'M 200 80 L 200 145', start: [200,80], end: [200,145], tip: '第 2 筆：右上一直豎' },
+          { d: 'M 75 185 L 150 185 L 150 230', start: [75,185], end: [150,230], tip: '第 3 筆：中間橫豎向下一彎' },
+          { d: 'M 75 230 L 225 230', start: [75,230], end: [225,230], tip: '第 4 筆：底部一長橫穩穩坐好' }
+        ]
+      },
+      'ㄔ': {
+        strokes: [
+          { d: 'M 160 70 L 100 120', start: [160,70], end: [100,120], tip: '第 1 筆：上面短撇向左' },
+          { d: 'M 175 110 L 95 175', start: [175,110], end: [95,175], tip: '第 2 筆：中間斜撇向左' },
+          { d: 'M 130 155 L 130 230', start: [130,155], end: [130,230], tip: '第 3 筆：一豎向下站穩' }
+        ]
+      },
+      'ㄕ': {
+        strokes: [
+          { d: 'M 85 80 L 85 155 L 195 155 L 195 80', start: [85,80], end: [195,80], tip: '第 1 筆：開口向上的方框' },
+          { d: 'M 80 155 L 80 230', start: [80,155], end: [80,230], tip: '第 2 筆：左下方一直豎' },
+          { d: 'M 80 225 L 210 225', start: [80,225], end: [210,225], tip: '第 3 筆：底下一長橫' }
+        ]
+      },
+      'ㄖ': {
+        strokes: [
+          { d: 'M 100 80 L 100 230', start: [100,80], end: [100,230], tip: '第 1 筆：左邊一直豎' },
+          { d: 'M 100 80 L 180 80 L 180 170 Q 180 225 215 220', start: [100,80], end: [215,220], tip: '第 2 筆：橫折豎彎向右下' }
+        ]
+      },
+      'ㄗ': {
+        strokes: [
+          { d: 'M 150 75 L 150 145', start: [150,75], end: [150,145], tip: '第 1 筆：上面一短豎' },
+          { d: 'M 85 145 L 215 145 L 115 225', start: [85,145], end: [115,225], tip: '第 2 筆：橫折往左斜撇' }
+        ]
+      },
+      'ㄘ': {
+        strokes: [
+          { d: 'M 95 80 L 95 145', start: [95,80], end: [95,145], tip: '第 1 筆：左上短豎' },
+          { d: 'M 195 80 L 195 145', start: [195,80], end: [195,145], tip: '第 2 筆：右上短豎' },
+          { d: 'M 80 145 L 220 145 L 120 225', start: [80,145], end: [120,225], tip: '第 3 筆：橫折往左斜撇' }
+        ]
+      },
+      'ㄙ': {
+        strokes: [
+          { d: 'M 150 75 L 85 170 L 215 170', start: [150,75], end: [215,170], tip: '第 1 筆：撇折向右（由上向左撇、再折向右橫）' },
+          { d: 'M 165 145 L 125 225', start: [165,145], end: [125,225], tip: '第 2 筆：右邊向左斜斜一短撇' }
+        ]
+      },
+      'ㄧ': {
+        strokes: [
+          { d: 'M 60 150 L 240 150', start: [60,150], end: [240,150], tip: '一筆連成：由左往右平平畫一橫' }
         ]
       },
       'ㄨ': {
         strokes: [
-          { d: 'M 80 80 L 220 220', start: [80,80], end: [220,220], tip: '第 1 筆：左上往右下斜撇' },
-          { d: 'M 220 80 L 80 220', start: [220,80], end: [80,220], tip: '第 2 筆：右上往左下交叉' }
+          { d: 'M 80 80 L 220 220', start: [80,80], end: [220,220], tip: '第 1 筆：左上往右下斜斜一劃' },
+          { d: 'M 220 80 L 80 220', start: [220,80], end: [80,220], tip: '第 2 筆：右上往左下斜斜交叉' }
         ]
       },
       'ㄩ': {
         strokes: [
-          { d: 'M 85 80 L 85 195 Q 85 225 150 225 Q 215 225 215 195 L 215 80', start: [85,80], end: [215,80], tip: '一筆連成：由左往下彎再向上' }
+          { d: 'M 85 80 L 85 195 Q 85 225 150 225 Q 215 225 215 195 L 215 80', start: [85,80], end: [215,80], tip: '一筆連成：由左往下凹彎再向上，像小碗一樣' }
         ]
       },
       'ㄚ': {
@@ -502,47 +573,75 @@ function updateSpelling(){
       },
       'ㄛ': {
         strokes: [
-          { d: 'M 150 70 L 150 185 Q 150 225 115 220', start: [150,70], end: [115,220], tip: '第 1 筆：中間一豎到底向左彎' },
-          { d: 'M 105 130 L 210 130', start: [105,130], end: [210,130], tip: '第 2 筆：橫劃穿過' }
+          { d: 'M 150 70 L 150 185 Q 150 225 115 220', start: [150,70], end: [115,220], tip: '第 1 筆：中間一豎到底向左微彎' },
+          { d: 'M 105 130 L 210 130', start: [105,130], end: [210,130], tip: '第 2 筆：橫劃穿過中間' }
         ]
       },
       'ㄜ': {
         strokes: [
-          { d: 'M 150 70 L 150 185 Q 150 225 185 220', start: [150,70], end: [185,220], tip: '第 1 筆：一豎向右彎' },
-          { d: 'M 95 130 L 205 130', start: [95,130], end: [205,130], tip: '第 2 筆：橫線穿過' }
+          { d: 'M 150 70 L 150 185 Q 150 225 185 220', start: [150,70], end: [185,220], tip: '第 1 筆：一豎向右下微彎' },
+          { d: 'M 95 130 L 205 130', start: [95,130], end: [205,130], tip: '第 2 筆：橫線穿過中間' }
         ]
       },
       'ㄝ': {
         strokes: [
           { d: 'M 80 85 L 220 85', start: [80,85], end: [220,85], tip: '第 1 筆：上面一橫' },
-          { d: 'M 150 85 L 150 225', start: [150,85], end: [150,225], tip: '第 2 筆：中間一豎' },
-          { d: 'M 80 155 L 220 155', start: [80,155], end: [220,155], tip: '第 3 筆：下面一橫' }
+          { d: 'M 150 85 L 150 225', start: [150,85], end: [150,225], tip: '第 2 筆：中間一直豎貫穿' },
+          { d: 'M 80 155 L 220 155', start: [80,155], end: [220,155], tip: '第 3 筆：中間下面一橫' }
         ]
       },
       'ㄞ': {
         strokes: [
-          { d: 'M 80 85 L 220 85', start: [80,85], end: [220,85], tip: '第 1 筆：上面一橫' },
-          { d: 'M 125 85 L 95 160 L 205 160', start: [125,85], end: [205,160], tip: '第 2 筆：撇折向右' },
-          { d: 'M 160 160 L 130 235', start: [160,160], end: [130,235], tip: '第 3 筆：左斜撇' }
+          { d: 'M 80 85 L 220 85', start: [80,85], end: [220,85], tip: '第 1 筆：上面一平橫' },
+          { d: 'M 130 85 L 95 160 L 205 160', start: [130,85], end: [205,160], tip: '第 2 筆：撇折向右橫' },
+          { d: 'M 160 160 L 130 235', start: [160,160], end: [130,235], tip: '第 3 筆：左下方斜撇' }
+        ]
+      },
+      'ㄟ': {
+        strokes: [
+          { d: 'M 80 100 L 135 150 L 220 115', start: [80,100], end: [220,115], tip: '一筆連成：向右下再往右上折（像溜滑梯一樣滑行）' }
         ]
       },
       'ㄠ': {
         strokes: [
-          { d: 'M 150 75 L 110 135 L 195 135', start: [150,75], end: [195,135], tip: '第 1 筆：撇折' },
-          { d: 'M 145 135 L 95 200 L 215 200', start: [145,135], end: [215,200], tip: '第 2 筆：再撇折' },
-          { d: 'M 175 200 L 140 235', start: [175,200], end: [140,235], tip: '第 3 筆：短撇' }
+          { d: 'M 150 75 L 110 135 L 195 135', start: [150,75], end: [195,135], tip: '第 1 筆：撇折向右' },
+          { d: 'M 145 135 L 95 200 L 215 200', start: [145,135], end: [215,200], tip: '第 2 筆：再撇折向右' },
+          { d: 'M 175 200 L 140 235', start: [175,200], end: [140,235], tip: '第 3 筆：左下短撇' }
+        ]
+      },
+      'ㄡ': {
+        strokes: [
+          { d: 'M 85 85 L 215 85 L 135 160', start: [85,85], end: [135,160], tip: '第 1 筆：橫折向左撇' },
+          { d: 'M 110 120 L 210 225', start: [110,120], end: [210,225], tip: '第 2 筆：左上往右下斜捺交叉' }
         ]
       },
       'ㄢ': {
         strokes: [
           { d: 'M 150 75 L 150 145 L 225 145', start: [150,75], end: [225,145], tip: '第 1 筆：豎折向右' },
-          { d: 'M 85 145 L 85 225 L 225 225', start: [85,145], end: [225,225], tip: '第 2 筆：左豎折向右' }
+          { d: 'M 85 145 L 85 225 L 225 225', start: [85,145], end: [225,225], tip: '第 2 筆：左豎折向右一橫' }
+        ]
+      },
+      'ㄣ': {
+        strokes: [
+          { d: 'M 90 80 L 90 155 L 210 155 L 210 225', start: [90,80], end: [210,225], tip: '一筆連成：豎折橫折豎往下階梯折' }
+        ]
+      },
+      'ㄤ': {
+        strokes: [
+          { d: 'M 80 85 L 220 85', start: [80,85], end: [220,85], tip: '第 1 筆：上面一橫' },
+          { d: 'M 125 85 L 125 160 L 215 160', start: [125,85], end: [215,160], tip: '第 2 筆：豎折向右一橫' },
+          { d: 'M 175 160 L 175 230', start: [175,160], end: [175,230], tip: '第 3 筆：右下一直豎' }
+        ]
+      },
+      'ㄥ': {
+        strokes: [
+          { d: 'M 120 75 L 120 160 L 210 160', start: [120,75], end: [210,160], tip: '一筆連成：豎折向右（像L型）' }
         ]
       },
       'ㄦ': {
         strokes: [
           { d: 'M 115 80 L 95 220', start: [115,80], end: [95,220], tip: '第 1 筆：左邊一撇' },
-          { d: 'M 175 80 L 175 190 Q 175 225 205 220', start: [175,80], end: [205,220], tip: '第 2 筆：豎彎鉤' }
+          { d: 'M 175 80 L 175 190 Q 175 225 205 220', start: [175,80], end: [205,220], tip: '第 2 筆：右邊豎彎鉤向右上' }
         ]
       }
     };
@@ -954,6 +1053,11 @@ function updateSpelling(){
           if(fallbackText) speak(fallbackText);
         });
       }
+    }
+
+    function playPureSymbol(s, onEnded){
+      let path = `./audio/zhuyin/${s}.mp3`;
+      playAudioFile(path, s, onEnded);
     }
 
     function playSymbol(s, onEnded){
