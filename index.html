@@ -19,7 +19,7 @@
     h2{margin:0 0 5px;color:#527b5d;font-size:25px}
     .subtitle{margin:0;line-height:1.5}
     .stars{display:inline-block;margin-top:9px;padding:6px 14px;border-radius:30px;background:#fff4bd;font-weight:800}
-    nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0 16px}
+    nav{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:8px 0 16px}
     .tab{border:0;border-radius:18px;background:rgba(255,255,255,.76);color:#58705e;padding:12px 4px;min-height:64px;font-size:16px;font-weight:800;box-shadow:0 4px 10px #43624614}
     .tab.active{background:var(--green);color:white;box-shadow:0 5px 0 var(--dark);transform:translateY(-2px)}
     .tab span{display:block;font-size:23px;line-height:1.15}
@@ -60,6 +60,22 @@
     .result strong{font-size:31px;color:#ca775e}
     .note{font-size:14px;color:#798879;line-height:1.6;text-align:center;margin:17px 2px 0}
     .hidden{display:none!important}
+
+    
+    /* 聲調按鈕樣式 */
+    .tone-selector{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 18px}
+    .tone-btn{border:2px solid #e3eddd;background:white;color:#50765c;border-radius:18px;min-width:68px;padding:8px 12px;font-weight:800;font-size:16px;box-shadow:0 3px 0 #d9e8d5;display:flex;flex-direction:column;align-items:center;gap:2px}
+    .tone-btn .mark{font-size:24px;line-height:1;color:#e18e70}
+    .tone-btn .name{font-size:13px;color:#6b7b68}
+    .tone-btn.active{background:#fff1c8;border-color:#e7b36a;transform:translateY(-2px);box-shadow:0 4px 0 #d69f58}
+    .tone-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #d69f58}
+    .tone-guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0}
+    .tone-card{background:white;border:2px solid #e5eee1;border-radius:20px;padding:14px;text-align:center;box-shadow:0 4px 10px #43624610;cursor:pointer;transition:transform .15s}
+    .tone-card:hover{transform:translateY(-3px);border-color:#719e78}
+    .tone-card .t-mark{font-size:38px;color:#d78363;font-weight:800;height:45px;display:flex;align-items:center;justify-content:center}
+    .tone-card .t-title{font-size:18px;font-weight:800;color:#4d7658;margin:4px 0}
+    .tone-card .t-desc{font-size:13px;color:#6b7b68;line-height:1.4}
+    .tone-card .t-example{font-size:14px;color:#c9795b;font-weight:700;margin-top:6px;background:#fff5e5;padding:4px 8px;border-radius:10px}
 
     /* 寫字區 */
     .writing-modes{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0 15px}
@@ -130,6 +146,7 @@
       <button class="tab active" data-page="listen"><span>👂</span>聽音找找</button>
       <button class="tab" data-page="learn"><span>🌼</span>認識注音</button>
       <button class="tab" data-page="spell"><span>🚌</span>拼音巴士</button>
+      <button class="tab" data-page="tone"><span>🎵</span>聲調魔法</button>
       <button class="tab" data-page="draw"><span>🎨</span>寫寫畫畫</button>
     </nav>
 
@@ -173,6 +190,16 @@
         <div id="initial-slot" class="slot empty">選聲符</div>
         <div class="plus">＋</div>
         <div id="final-slot" class="slot empty">選符號</div>
+        <div class="plus">＋</div>
+        <div id="tone-slot" class="slot" style="font-size:32px;color:#d78363">一聲</div>
+      </div>
+      <div class="pick-label">選擇聲調（可隨時換調試試看）</div>
+      <div class="tone-selector" id="spell-tones">
+        <button class="tone-btn active" data-tone="1"><span class="mark">ˉ</span><span class="name">一聲</span></button>
+        <button class="tone-btn" data-tone="2"><span class="mark">ˊ</span><span class="name">二聲</span></button>
+        <button class="tone-btn" data-tone="3"><span class="mark">ˇ</span><span class="name">三聲</span></button>
+        <button class="tone-btn" data-tone="4"><span class="mark">ˋ</span><span class="name">四聲</span></button>
+        <button class="tone-btn" data-tone="5"><span class="mark">˙</span><span class="name">輕聲</span></button>
       </div>
       <div class="pick-label">① 選一個聲符</div>
       <div class="mini-grid" id="initial-picks"></div>
@@ -184,6 +211,61 @@
         <button id="spell-clear" class="btn light">重新選擇</button>
       </div>
       <p class="note">這裡先玩部分簡單的二拼範例。沒有出現的組合，不一定是錯的喔！</p>
+    </section>
+
+    
+    <section id="tone" class="panel hidden">
+      <h2>🎵 聲調魔法</h2>
+      <p class="hint">注音有五個神奇的聲調魔法！點一張卡片，聽聽小動物和音調是怎麼變化的！</p>
+      
+      <div class="tone-guide-grid">
+        <div class="tone-card" data-tone="1">
+          <div class="t-mark">ˉ (不標)</div>
+          <div class="t-title">第一聲：陰平</div>
+          <div class="t-desc">高高平平像走平路</div>
+          <div class="t-example">例如：媽媽、小巴、小豬</div>
+        </div>
+        <div class="tone-card" data-tone="2">
+          <div class="t-mark">ˊ</div>
+          <div class="t-title">第二聲：陽平</div>
+          <div class="t-desc">向上爬坡爬山去</div>
+          <div class="t-example">例如：芝麻、拔蘿蔔、爬山</div>
+        </div>
+        <div class="tone-card" data-tone="3">
+          <div class="t-mark">ˇ</div>
+          <div class="t-title">第三聲：上聲</div>
+          <div class="t-desc">轉個大彎再向上</div>
+          <div class="t-example">例如：小馬、雨傘、老虎</div>
+        </div>
+        <div class="tone-card" data-tone="4">
+          <div class="t-mark">ˋ</div>
+          <div class="t-title">第四聲：去聲</div>
+          <div class="t-desc">溜滑梯乾脆往下掉</div>
+          <div class="t-example">例如：爸爸、兔子、大樹</div>
+        </div>
+        <div class="tone-card" data-tone="5">
+          <div class="t-mark">˙</div>
+          <div class="t-title">輕聲</div>
+          <div class="t-desc">輕輕短短點一下</div>
+          <div class="t-example">例如：好嗎、走吧、滴噠</div>
+        </div>
+      </div>
+
+      <div class="question center" style="margin-top:20px">
+        <p>跟著「ㄇㄚ」體驗四聲與輕聲魔法！</p>
+        <div class="tone-selector" id="magic-tones">
+          <button class="tone-btn active" data-tone="1"><span class="mark">ˉ</span><span class="name">一聲・媽</span></button>
+          <button class="tone-btn" data-tone="2"><span class="mark">ˊ</span><span class="name">二聲・麻</span></button>
+          <button class="tone-btn" data-tone="3"><span class="mark">ˇ</span><span class="name">三聲・馬</span></button>
+          <button class="tone-btn" data-tone="4"><span class="mark">ˋ</span><span class="name">四聲・罵</span></button>
+          <button class="tone-btn" data-tone="5"><span class="mark">˙</span><span class="name">輕聲・嗎</span></button>
+        </div>
+        <div id="tone-magic-result" style="font-size:22px;font-weight:800;color:#c9795b;margin:12px 0">
+          <strong>ㄇㄚ (一聲) ＝ 媽媽的「媽」！</strong>
+        </div>
+        <button id="btn-play-tone-magic" class="btn">🔊 聽調音魔法</button>
+      </div>
+      <p class="note">小提醒：第一聲通常省略不寫出聲調符號；輕聲的點點標在注音符號的上方喔！</p>
     </section>
 
     <section id="draw" class="panel hidden">
@@ -338,7 +420,29 @@
       learnGroup=b.dataset.filter;setFilter($('learn-filters'),learnGroup);renderLearn();
     };
 
-    let chosenInitial='',chosenFinal='';
+    let chosenInitial='',chosenFinal='',chosenTone='1';
+    const toneMarks = {'1':'一聲','2':'ˊ (二聲)','3':'ˇ (三聲)','4':'ˋ (四聲)','5':'˙ (輕聲)'};
+    const tonePureNames = {'1':'一聲','2':'二聲','3':'三聲','4':'四聲','5':'輕聲'};
+
+    const toneDictionary = {
+      'ㄅㄚ': {'1':'巴','2':'拔','3':'把','4':'爸','5':'吧'},
+      'ㄇㄚ': {'1':'媽','2':'麻','3':'馬','4':'罵','5':'嗎'},
+      'ㄉㄚ': {'1':'搭','2':'達','3':'打','4':'大','5':'噠'},
+      'ㄊㄚ': {'1':'他','3':'塔','4':'踏'},
+      'ㄋㄚ': {'1':'拿','2':'拿','3':'哪','4':'那','5':'吶'},
+      'ㄌㄚ': {'1':'拉','3':'喇','4':'辣','5':'啦'},
+      'ㄍㄜ': {'1':'哥','2':'格','3':'葛','4':'個'},
+      'ㄎㄜ': {'1':'科','2':'咳','3':'可','4':'課'},
+      'ㄏㄜ': {'1':'喝','2':'盒','4':'賀'},
+      'ㄓㄨ': {'1':'豬','2':'竹','3':'主','4':'祝'},
+      'ㄕㄨ': {'1':'書','2':'熟','3':'鼠','4':'樹'},
+      'ㄐㄧ': {'1':'雞','2':'極','3':'幾','4':'記'},
+      'ㄑㄧ': {'1':'七','2':'騎','3':'起','4':'氣'},
+      'ㄒㄧ': {'1':'西','2':'席','3':'洗','4':'細'},
+      'ㄅㄛ': {'1':'波','2':'伯','3':'跛'},
+      'ㄆㄛ': {'1':'坡','2':'婆','4':'破'}
+    };
+
     const initials=[...new Set(Object.keys(examples).map(k=>k[0]))];
     const finals=[...new Set(Object.keys(examples).map(k=>k[1]))];
     function renderPicks(){
@@ -362,16 +466,24 @@ function updateSpelling(autoPlaySuccess=false){
         el.textContent=value||placeholder;
         el.classList.toggle('empty',!value);
       }
+      $('tone-slot').textContent = toneMarks[chosenTone] || '一聲';
+
       const res=$('spell-result');
       if(chosenInitial && chosenFinal){
         const key=chosenInitial+chosenFinal;
-        const char=examples[key];
+        const toneMap = toneDictionary[key];
+        const char = (toneMap && toneMap[chosenTone]) ? toneMap[chosenTone] : (chosenTone === '1' ? examples[key] : '');
         if(char){
-          res.innerHTML=`<strong>${chosenInitial}${chosenFinal} ${char}</strong>！拼成功了：遇見「${char}」！`;
+          res.innerHTML=`<strong>${chosenInitial}${chosenFinal} (${tonePureNames[chosenTone]}) ＝「${char}」</strong>！拼對囉！`;
           if(autoPlaySuccess){
             setTimeout(()=>{
-              playWord(key);
+              playToneWord(key, chosenTone);
             }, 300);
+          }
+        }else if(examples[key]){
+          res.innerHTML=`<strong>${chosenInitial}${chosenFinal}</strong> 是一起前進的好朋友！換成一聲試試看！`;
+          if(autoPlaySuccess && chosenTone === '1'){
+            setTimeout(()=>{ playWord(key); }, 300);
           }
         }else{
           res.innerHTML=`<strong>${chosenInitial}${chosenFinal}</strong> 是一起前進的好朋友！`;
@@ -380,9 +492,19 @@ function updateSpelling(autoPlaySuccess=false){
         const val=chosenInitial||chosenFinal;
         res.innerHTML=`選了 <strong>${val}</strong>，再選一個符號試試看！`;
       }else{
-        res.textContent='選兩張卡片，看看會發生什麼事！';
+        res.textContent='選兩張卡片，再挑選聲調，看看會遇見哪個字！';
       }
     }
+
+    // 聲調選擇按鈕點擊事件 (拼音巴士)
+    document.querySelectorAll('#spell-tones .tone-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('#spell-tones .tone-btn').forEach(b => b.classList.toggle('active', b === btn));
+        chosenTone = btn.dataset.tone;
+        updateSpelling(true);
+        playPureTone(chosenTone);
+      };
+    });
 
     $('spell-speak').onclick=()=>{
       if(!chosenInitial && !chosenFinal){
@@ -391,22 +513,17 @@ function updateSpelling(autoPlaySuccess=false){
       }
       if(chosenInitial && chosenFinal){
         const key=chosenInitial+chosenFinal;
-        if(examples[key]){
-          playWord(key);
-        }else{
-          playSymbol(chosenInitial, ()=>{
-            setTimeout(()=>playSymbol(chosenFinal), 400);
-          });
-        }
+        playToneWord(key, chosenTone);
       }else if(chosenInitial){
-        playSymbol(chosenInitial);
+        playPureSymbol(chosenInitial);
       }else if(chosenFinal){
-        playSymbol(chosenFinal);
+        playPureSymbol(chosenFinal);
       }
     };
 
     $('spell-clear').onclick=()=>{
-      chosenInitial='';chosenFinal='';
+      chosenInitial='';chosenFinal='';chosenTone='1';
+      document.querySelectorAll('#spell-tones .tone-btn').forEach(b => b.classList.toggle('active', b.dataset.tone === '1'));
       renderPicks();
       updateSpelling();
       playSfx('click');
@@ -1055,6 +1172,26 @@ function updateSpelling(autoPlaySuccess=false){
       }
     }
 
+        function playPureTone(tone, onEnded){
+      let path = `./audio/tones/pure_${tone}.mp3`;
+      playAudioFile(path, `${tonePureNames[tone]}，${toneMarks[tone]}`, onEnded);
+    }
+
+    function playToneWord(combo, tone, onEnded){
+      const toneMap = toneDictionary[combo];
+      const char = (toneMap && toneMap[tone]) ? toneMap[tone] : examples[combo];
+      let path = `./audio/tones/${combo}_${tone}.mp3`;
+      if(!toneMap || !toneMap[tone]){
+        path = `./audio/words/${combo}.mp3`;
+      }
+      playAudioFile(path, `${combo[0]}、${combo[1]}，${tonePureNames[tone]}，${char || combo}！`, onEnded);
+    }
+
+    function playToneIntro(tone, onEnded){
+      let path = `./audio/tones/intro_${tone}.mp3`;
+      playAudioFile(path, `${tonePureNames[tone]}魔法`, onEnded);
+    }
+
     function playPureSymbol(s, onEnded){
       let path = `./audio/zhuyin/${s}.mp3`;
       playAudioFile(path, s, onEnded);
@@ -1100,6 +1237,34 @@ function updateSpelling(autoPlaySuccess=false){
       if(!item) return;
       playSymbol(item[0]);
     }
+
+    
+    // ==========================================
+    // 聲調魔法 單元邏輯
+    // ==========================================
+    document.querySelectorAll('.tone-card').forEach(card => {
+      card.onclick = () => {
+        const tone = card.dataset.tone;
+        playToneIntro(tone);
+        card.style.transform = 'scale(1.05)';
+        setTimeout(() => card.style.transform = '', 300);
+      };
+    });
+
+    let curMagicTone = '1';
+    const magicWords = {'1':'媽 (媽媽)','2':'麻 (芝麻)','3':'馬 (小馬)','4':'罵 (不要罵人)','5':'嗎 (好嗎)'};
+    document.querySelectorAll('#magic-tones .tone-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('#magic-tones .tone-btn').forEach(b => b.classList.toggle('active', b === btn));
+        curMagicTone = btn.dataset.tone;
+        $('tone-magic-result').innerHTML = `<strong>ㄇㄚ (${tonePureNames[curMagicTone]}) ＝ ${magicWords[curMagicTone]}！</strong>`;
+        playToneWord('ㄇㄚ', curMagicTone);
+      };
+    });
+
+    $('btn-play-tone-magic').onclick = () => {
+      playToneWord('ㄇㄚ', curMagicTone);
+    };
 
     // 點擊貓咪巴士互動
     const mascot = document.querySelector('.mascot');
